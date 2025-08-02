@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Live Cricket Banner (With History)</title>
+  <title>Live Cricket Scoreboard</title>
   <style>
     body {
       margin: 0;
@@ -37,38 +37,6 @@
     .score-box span {
       font-size: 18px;
     }
-    form {
-      max-width: 960px;
-      margin: 20px auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: space-between;
-    }
-    input, button {
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-      width: 30%;
-      min-width: 150px;
-    }
-    button {
-      background-color: #2196f3;
-      color: white;
-      cursor: pointer;
-    }
-    .history {
-      max-width: 960px;
-      margin: 20px auto;
-      background: rgba(255,255,255,0.05);
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 13px;
-    }
-    .history-entry {
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-      padding: 5px 0;
-    }
     .team-logo {
       height: 30px;
       width: 30px;
@@ -85,20 +53,6 @@
   </style>
 </head>
 <body>
-  <form id="updateForm">
-    <input type="text" id="batsman1Name" placeholder="Batsman 1 Name e.g. Salman" />
-    <input type="text" id="batsman1Runs" placeholder="Batsman 1 Runs e.g. 5 (4)" />
-    <input type="text" id="batsman2Name" placeholder="Batsman 2 Name e.g. Ali Khan" />
-    <input type="text" id="batsman2Runs" placeholder="Batsman 2 Runs e.g. 7 (3)" />
-    <input type="text" id="team1" placeholder="Team 1 Name" />
-    <input type="file" id="logo1Input" accept="image/*" />
-    <input type="text" id="team2" placeholder="Team 2 Name" />
-    <input type="file" id="logo2Input" accept="image/*" />
-    <input type="text" id="score" placeholder="Score e.g. 1 / 12" />
-    <input type="text" id="bowler" placeholder="Bowler e.g. Asad 0/3 (0.1)" />
-    <input type="text" id="over" placeholder="Over e.g. 1.1" />
-    <button type="submit">Update</button>
-  </form>
 
   <div class="banner" id="liveBanner">
     <div class="player">
@@ -108,81 +62,41 @@
     <div class="score-box">
       <div class="match-header">
         <img id="teamLogo1" class="team-logo" src="" alt="Team 1 Logo" />
-        <div id="matchText">Lahore Kings vs Karachi Knights</div>
+        <div id="matchText">Team 1 vs Team 2</div>
         <img id="teamLogo2" class="team-logo" src="" alt="Team 2 Logo" />
       </div>
-      <span id="scoreText">1 / 12</span>
+      <span id="scoreText">0 / 0</span>
     </div>
     <div class="player" style="text-align: right;">
-      <div id="bowlerText">Asad <strong>0/3 (0.1)</strong></div>
-      <div id="overText">1.1</div>
+      <div id="bowlerText">Bowler <strong>0/0 (0.0)</strong></div>
+      <div id="overText">0.0</div>
     </div>
-  </div>
-
-  <div class="history" id="history">
-    <h3>Update History</h3>
   </div>
 
   <script>
-    const lastValues = {};
+  async function fetchLiveScore() {
+    try {
+      const res = await fetch('live_score.json?nocache=' + Date.now());
+      const data = await res.json();
 
-    document.getElementById("updateForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+      document.getElementById("b1Name").innerText = data.b1Name;
+      document.getElementById("b1Runs").innerText = data.b1Runs;
+      document.getElementById("b2Name").innerText = data.b2Name;
+      document.getElementById("b2Runs").innerText = data.b2Runs;
+      document.getElementById("matchText").innerText = `${data.team1} vs ${data.team2}`;
+      document.getElementById("scoreText").innerText = data.score;
+      document.getElementById("bowlerText").innerHTML = data.bowler;
+      document.getElementById("overText").innerText = data.over;
+      document.getElementById("teamLogo1").src = data.logo1;
+      document.getElementById("teamLogo2").src = data.logo2;
+    } catch (err) {
+      console.error("Error fetching live score:", err);
+    }
+  }
 
-      function updateField(inputId, elementId, label = "", isHTML = false) {
-        const input = document.getElementById(inputId);
-        const value = input.value.trim();
-        if (value) {
-          lastValues[elementId] = value;
-        }
-        if (lastValues[elementId]) {
-          if (isHTML) {
-            document.getElementById(elementId).innerHTML = label + lastValues[elementId];
-          } else {
-            document.getElementById(elementId).innerText = label + lastValues[elementId];
-          }
-        }
-      }
-
-      updateField("batsman1Name", "b1Name", "", false);
-      updateField("batsman1Runs", "b1Runs");
-      updateField("batsman2Name", "b2Name", "", false);
-      updateField("batsman2Runs", "b2Runs");
-      const team1 = document.getElementById("team1").value.trim();
-      const team2 = document.getElementById("team2").value.trim();
-      if (team1 && team2) {
-        lastValues.matchText = team1 + " vs " + team2;
-        document.getElementById("matchText").innerText = lastValues.matchText;
-      }
-      updateField("score", "scoreText");
-      updateField("bowler", "bowlerText", "", true);
-      updateField("over", "overText");
-
-      const logo1Input = document.getElementById("logo1Input");
-      const logo2Input = document.getElementById("logo2Input");
-      if (logo1Input.files && logo1Input.files[0]) {
-        const reader1 = new FileReader();
-        reader1.onload = function(e) {
-          document.getElementById("teamLogo1").src = e.target.result;
-        }
-        reader1.readAsDataURL(logo1Input.files[0]);
-      }
-      if (logo2Input.files && logo2Input.files[0]) {
-        const reader2 = new FileReader();
-        reader2.onload = function(e) {
-          document.getElementById("teamLogo2").src = e.target.result;
-        }
-        reader2.readAsDataURL(logo2Input.files[0]);
-      }
-
-      const history = document.getElementById("history");
-      const entry = document.createElement("div");
-      entry.className = "history-entry";
-      entry.textContent = `${lastValues.matchText || ""} | ${lastValues.scoreText || ""} | Over: ${lastValues.overText || ""} | Bat: ${lastValues.b1Name || ""} ${lastValues.b1Runs || ""}, ${lastValues.b2Name || ""} ${lastValues.b2Runs || ""} | Bowl: ${lastValues.bowlerText || ""}`;
-      history.appendChild(entry);
-
-      this.reset();
-    });
+  // Auto-refresh every 5 seconds
+  setInterval(fetchLiveScore, 5000);
+  fetchLiveScore();
   </script>
 </body>
 </html>
