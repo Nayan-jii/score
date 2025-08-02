@@ -73,34 +73,33 @@
     </div>
   </div>
 
-<!-- Supabase JS SDK -->
-<script src="https://unpkg.com/@supabase/supabase-js"></script>
-<script>
-  // अपने Supabase Project URL और Public anon key डालें
+<!-- Supabase JS SDK (v2 as ES module) -->
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
   const SUPABASE_URL = "https://oxcugelmtwyrjifmpcav.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94Y3VnZWxtdHd5cmppZm1wY2F2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQxNDYzMzYsImV4cCI6MjA2OTcyMjMzNn0.4RCc-UMK13UTZBUnLaO8KurHiNNLeIR2XrMKIUQdlj0";
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // Realtime subscription
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // Subscribe to changes in the "Score" table
   supabase
     .channel('table-db-changes')
     .on(
       'postgres_changes',
-      { event: '*', schema: 'public', table: 'scoreboard' },
+      { event: '*', schema: 'public', table: 'Score' },
       payload => {
         console.log('Scoreboard change received!', payload.new);
         const data = payload.new;
 
-        document.getElementById("b1Name").innerText = data.batsman1;
-        document.getElementById("b1Runs").innerText = data.batsman1_runs;
-        document.getElementById("b2Name").innerText = data.batsman2;
-        document.getElementById("b2Runs").innerText = data.batsman2_runs;
+        document.getElementById("b1Name").innerText = data.b1Name;
+        document.getElementById("b1Runs").innerText = data.b1Runs;
+        document.getElementById("b2Name").innerText = data.b2Name;
+        document.getElementById("b2Runs").innerText = data.b2Runs;
         document.getElementById("matchText").innerText = `${data.team1} vs ${data.team2}`;
-        document.getElementById("scoreText").innerText = data.score;
-        document.getElementById("bowlerText").innerHTML = data.bowler;
-        document.getElementById("overText").innerText = data.over;
-        document.getElementById("teamLogo1").src = data.logo1;
-        document.getElementById("teamLogo2").src = data.logo2;
+        document.getElementById("scoreText").innerText = data.scoreText;
+        document.getElementById("bowlerText").innerHTML = data.bowlerText;
+        document.getElementById("overText").innerText = data.overText;
       }
     )
     .subscribe();
