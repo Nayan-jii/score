@@ -1,13 +1,13 @@
 {
-  "b1Name": "Batsman 1",
-  "b1Runs": "0 (0)",
-  "b2Name": "Batsman 2",
-  "b2Runs": "0 (0)",
-  "team1": "Lahore Kings",
-  "team2": "Karachi Knights",
-  "score": "0 / 0",
-  "bowler": "Bowler Name <strong>0/0 (0.0)</strong>",
-  "over": "0.0",
+  "b1Name": "Nayan jii",
+  "b1Runs": "20 (10)",
+  "b2Name": "Shivam",
+  "b2Runs": "30 (10)",
+  "team1": "Lagends",
+  "team2": "Titans",
+  "score": "110 / 12",
+  "bowler": "bishwash <strong>0/0 (0.0)</strong>",
+  "over": "11.4",
   "logo1": "logo1.png",
-  "logo2": "logo2.png"
+  "logo2": ""
 }
