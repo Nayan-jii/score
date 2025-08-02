@@ -1,0 +1,13 @@
+{
+  "b1Name": "Batsman 1",
+  "b1Runs": "0 (0)",
+  "b2Name": "Batsman 2",
+  "b2Runs": "0 (0)",
+  "team1": "Lahore Kings",
+  "team2": "Karachi Knights",
+  "score": "0 / 0",
+  "bowler": "Bowler Name <strong>0/0 (0.0)</strong>",
+  "over": "0.0",
+  "logo1": "logo1.png",
+  "logo2": "logo2.png"
+}
